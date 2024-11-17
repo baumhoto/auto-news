@@ -55,7 +55,10 @@ class OperatorRSS(OperatorBase):
             link = entry.link
 
             # Example: Thu, 03 Mar 2022 08:00:00 GMT
-            published = entry.published
+            if entry.published:
+                published = entry.published
+            else :
+                published = datetime.date.today()
             published_parsed = entry.published_parsed
             published_key = published
 
@@ -143,7 +146,7 @@ class OperatorRSS(OperatorBase):
             url = rss["url"]
             print(f"Fetching RSS: {name}, url: {url}")
 
-            articles = self._fetch_articles(name, url, count=3)
+            articles = self._fetch_articles(name, url, count=99)
             print(f"articles: {articles}")
 
             for article in articles:
@@ -261,14 +264,16 @@ class OperatorRSS(OperatorBase):
             "BOT_REDIS_KEY_EXPIRE_TIME", 604800)
 
         summarized_pages = []
+        summarized_cnt = 0
 
         for page in pages:
+            summarized_cnt += 1
             page_id = page["id"]
             title = page["title"]
             content = page["content"]
             list_name = page["list_name"]
             source_url = page["url"]
-            print(f"Summarying page, title: {title}, list_name: {list_name}")
+            print(f"Summarying page, count:{summarized_cnt}/{len(pages)} title: {title}, list_name: {list_name}")
             # print(f"Page content ({len(content)} chars): {content}")
 
             st = time.time()
